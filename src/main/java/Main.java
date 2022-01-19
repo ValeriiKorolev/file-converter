@@ -2,21 +2,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-//import javax.lang.model.element.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -24,28 +19,34 @@ public class Main {
 
     public static void main(String args[]) throws IOException, ParserConfigurationException, SAXException {
 
-        //Task1
+        //Task 1
         // Конвертируем строки csv в объекты класса Employee
-        //String[] columnMapping = {"id", "firstName", "lastName", "country", "age"};
-        //String fileName = "data.csv";
-        //List<Employee> list = parseCSV(columnMapping, fileName);
-        //list.forEach(System.out::println);
+        String[] columnMapping = {"id", "firstName", "lastName", "country", "age"};
+        String fileNameCSV = "data.csv";
+        List<Employee> list1 = parseCSV(columnMapping, fileNameCSV);
+        list1.forEach(System.out::println);
         // Конвертируем объекты класса Employee строку формата json
-        //String json = listToJson(list);
-        //System.out.println(json);
+        String json1 = listToJson(list1);
+        System.out.println(json1);
         // Записываем в файл json
-        //writeString(json, "data.json");
+        writeString(json1, "data.json");
 
-        //Task2
+        //Task 2
         // Конвертируем xml в объекты класса Employee
-        String fileName = "data.xml";
-        List<Employee> list = parseXML(fileName);
-        list.forEach(System.out::println);
+        String fileNameXML = "data.xml";
+        List<Employee> list2 = parseXML(fileNameXML);
+        list2.forEach(System.out::println);
         //Конвертируем объекты класса Employee строку формата json
-        String json = listToJson(list);
-        System.out.println(json);
+        String json2 = listToJson(list2);
+        System.out.println(json2);
         // Записываем в файл json
-        writeString(json, "data1.json");
+        writeString(json2, "data1.json");
+
+        //Task 3
+        //чтение файла JSON, его парсинг и преобразование объектов JSON в классы Java
+        String json = readString("data1.json");
+        List<Employee> list = jsonToList(json);
+        list.forEach(System.out::println);
 
     }
 
@@ -125,6 +126,24 @@ public class Main {
         catch(IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String readString(String fileName) {
+        String jsonString = null;
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            jsonString = br.readLine();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return jsonString;
+    }
+
+    public static List<Employee> jsonToList(String json) {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        Type listType = new TypeToken<List<Employee>>() {}.getType();
+        List<Employee> list = gson.fromJson(json, listType);
+        return list;
     }
 
 }
