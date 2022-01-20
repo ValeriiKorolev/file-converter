@@ -24,27 +24,27 @@ public class Main {
         String[] columnMapping = {"id", "firstName", "lastName", "country", "age"};
         String fileNameCSV = "data.csv";
         List<Employee> list1 = parseCSV(columnMapping, fileNameCSV);
-        list1.forEach(System.out::println);
         // Конвертируем объекты класса Employee строку формата json
         String json1 = listToJson(list1);
-        System.out.println(json1);
         // Записываем в файл json
-        writeString(json1, "data.json");
+        String fileNameJSON = "data.json";
+        writeString(json1, fileNameJSON);
+        System.out.println("Файл " + fileNameCSV + " конвертирован в файл " + fileNameJSON);
 
         //Task 2
         // Конвертируем xml в объекты класса Employee
         String fileNameXML = "data.xml";
         List<Employee> list2 = parseXML(fileNameXML);
-        list2.forEach(System.out::println);
         //Конвертируем объекты класса Employee строку формата json
         String json2 = listToJson(list2);
-        System.out.println(json2);
         // Записываем в файл json
+        String fileNameJSON1 = "data1.json";
         writeString(json2, "data1.json");
+        System.out.println("Файл " + fileNameXML + " конвертирован в файл " + fileNameJSON1);
 
         //Task 3
         //чтение файла JSON, его парсинг и преобразование объектов JSON в классы Java
-        String json = readString("data1.json");
+        String json = readString("data.json");
         List<Employee> list = jsonToList(json);
         list.forEach(System.out::println);
 
@@ -78,7 +78,7 @@ public class Main {
             Node node_ = nodeList.item(i);
             if (node_.getNodeName().equals("employee")) {
                 NodeList nodeList1 = node_.getChildNodes();
-                long id =0;
+                long id = 0;
                 String firstName = null;
                 String lastName = null;
                 String country = null;
@@ -88,19 +88,19 @@ public class Main {
                     String attrName = node_1.getNodeName();
                     String attrValue = node_1.getTextContent();
                     switch (attrName) {
-                        case "id" :
+                        case "id":
                             id = Long.parseLong(attrValue);
                             break;
-                        case "firstName" :
+                        case "firstName":
                             firstName = attrValue;
                             break;
-                        case "lastName" :
+                        case "lastName":
                             lastName = attrValue;
                             break;
-                        case "country" :
+                        case "country":
                             country = attrValue;
                             break;
-                        case "age" :
+                        case "age":
                             age = Integer.parseInt(attrValue);
                     }
                 }
@@ -113,7 +113,8 @@ public class Main {
     public static String listToJson(List<Employee> list) {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        Type listType = new TypeToken<List<Employee>>() {}.getType();
+        Type listType = new TypeToken<List<Employee>>() {
+        }.getType();
         String json = gson.toJson(list, listType);
         return json;
     }
@@ -122,8 +123,7 @@ public class Main {
         try (FileWriter file = new FileWriter(fileName)) {
             file.write(json);
             file.flush();
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -141,7 +141,8 @@ public class Main {
     public static List<Employee> jsonToList(String json) {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        Type listType = new TypeToken<List<Employee>>() {}.getType();
+        Type listType = new TypeToken<List<Employee>>() {
+        }.getType();
         List<Employee> list = gson.fromJson(json, listType);
         return list;
     }
